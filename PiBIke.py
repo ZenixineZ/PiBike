@@ -5,10 +5,40 @@ Created on Sat Apr  6 16:11:10 2024
 
 @author: zenix
 """
+import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from PyQt5.QWidgets import QApplication, QMainWindow
-import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow
+
+
+class DataReader():
+    def __init__(self):
+        self.count = 0.0
+    def get_new_data(self):
+        if(self.count == 10.0):
+            self.count = 0.0
+        self.count += 1
+        return [self.count, self.count, self.count, self.count, self.count, self.count]
+
+class PiBike(QMainWindow):
+    def __init__(self, data_reader):
+        self.data_reader = data_reader
+        super(PiBike, self).__init__()
+    def setUI(self, ui):
+        self.ui = ui
+        self.update_timer = QtCore.QTimer(self)
+        self.update_timer.timeout.connect(self.update_vals)
+        self.update_timer.start(500)
+    
+    def update_vals(self):
+        vals = self.data_reader.get_new_data()
+        self.ui.lblDistVal.setText(str(vals[0]) + " Miles")
+        self.ui.lblSpeedVal.setText(str(vals[1]) + " MPH")
+        self.ui.lblAccVal.setText(str(vals[2]) + " Ft/sec^2")
+        self.ui.lblElevVal.setText(str(vals[3]) + " Ft")
+        self.ui.lblCadVal.setText(str(vals[4]))
+        self.ui.lblAvgSpeedVal.setText(str(vals[5]) + " MPH")
+        
 
 class Ui_PiBike(object):
     def setupUi(self, PiBike):
@@ -31,6 +61,7 @@ class Ui_PiBike(object):
         self.lblDist.setAlignment(QtCore.Qt.AlignCenter)
         self.lblDist.setObjectName("lblDist")
         self.gridLayout.addWidget(self.lblDist, 0, 0, 1, 1)
+                                  
         self.lblAvgSpeed = QtWidgets.QLabel(self.tabData)
         font = QtGui.QFont()
         font.setPointSize(17)
@@ -106,14 +137,14 @@ class Ui_PiBike(object):
         self.lblAccVal.setAlignment(QtCore.Qt.AlignCenter)
         self.lblAccVal.setObjectName("lblAccVal")
         self.gridLayout.addWidget(self.lblAccVal, 6, 0, 1, 1)
-        self.lblCadVAl = QtWidgets.QLabel(self.tabData)
+        self.lblCadVal = QtWidgets.QLabel(self.tabData)
         font = QtGui.QFont()
         font.setPointSize(40)
-        self.lblCadVAl.setFont(font)
-        self.lblCadVAl.setText("")
-        self.lblCadVAl.setAlignment(QtCore.Qt.AlignCenter)
-        self.lblCadVAl.setObjectName("lblCadVAl")
-        self.gridLayout.addWidget(self.lblCadVAl, 6, 1, 1, 1)
+        self.lblCadVal.setFont(font)
+        self.lblCadVal.setText("")
+        self.lblCadVal.setAlignment(QtCore.Qt.AlignCenter)
+        self.lblCadVal.setObjectName("lblCadVal")
+        self.gridLayout.addWidget(self.lblCadVal, 6, 1, 1, 1)
         self.tabWidget.addTab(self.tabData, "")
         self.tabGraphs = QtWidgets.QWidget()
         self.tabGraphs.setObjectName("tabGraphs")
@@ -138,7 +169,7 @@ class Ui_PiBike(object):
         self.menubar.addAction(self.menuAbout.menuAction())
 
         self.retranslateUi(PiBike)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(PiBike)
 
     def retranslateUi(self, PiBike):
@@ -155,19 +186,12 @@ class Ui_PiBike(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabMao), _translate("PiBike", "Map"))
         self.menuFile.setTitle(_translate("PiBike", "File"))
         self.menuAbout.setTitle(_translate("PiBike", "About"))
-
-
-
-class PiBike(QMainWindow):
-    def __init__(self):
-        pass
-    def setUI(self, ui):
-        self.ui = ui
         
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    piBike = PiBike()
+    data_reader = DataReader()
+    piBike = PiBike(data_reader)
     ui = Ui_PiBike()
     ui.setupUi(piBike)
     piBike.setUI(ui)
