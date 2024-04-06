@@ -1,0 +1,28 @@
+FEATURES:
+	-cadence tracking/warnings
+		-how to track the pedal rpms?
+	-GPS tracking/mapping
+	-elevation tracking/plotting
+	-Dist/Speed/Accel tracking
+	-Python or c++ backend?
+		-PyQt or Qt UI?
+
+
+PARTS LIST:
+	-Pi 5
+	-Cat eye or other rpm sensor
+	-Bluetooth module?
+	-GPS?
+	-Touch screen
+	-Rugged case
+	-Some sort of screen wiper?
+	-Speaker for cadence feedback?
+
+TEST CAT-EYE USABILITY: 
+	-Bluetooth Modulation
+		-https://www.tomesoftware.com/labs/bluetoothⓇ-le-modulation-characteristics-making-waves/
+	-Use Sceptre to capture and demod/decode bits of transmission
+	-Open them up in a bluetooth packet analyzer and see if you can figure out the messaging format
+		-Might need to crack some packets here to get at the data
+	-Make an ingest thread/parser for the messages
+
